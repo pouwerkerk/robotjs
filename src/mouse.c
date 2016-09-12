@@ -196,6 +196,33 @@ void clickMouse(MMMouseButton button)
 	toggleMouse(false, button);
 }
 
+void toggleMouseAtPoint(bool down, MMMouseButton button, MMPoint point)
+{
+#if defined(IS_MACOSX)
+	const CGPoint pos = CGPointFromMMPoint(point);
+	CGPostMouseEvent(
+		pos,
+		false,
+		1,
+		down
+	);
+#elif defined(USE_X11)
+	// Don't do anything different on X11
+	toggleMouse(true, button);
+	toggleMouse(false, button);
+#elif defined(IS_WINDOWS)
+	// Don't do anything different on Windows
+	toggleMouse(true, button);
+	toggleMouse(false, button);
+#endif
+}
+
+void clickMouseAtPoint(MMMouseButton button, MMPoint point)
+{
+	toggleMouseAtPoint(true, button, point);
+	toggleMouseAtPoint(false, button, point);
+}
+
 /**
  * Special function for sending double clicks, needed for Mac OS X.
  * @param button Button to click.

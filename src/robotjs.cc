@@ -177,6 +177,39 @@ NAN_METHOD(mouseClick)
 	info.GetReturnValue().Set(Nan::New(1));
 }
 
+NAN_METHOD(mouseClickAtPoint)
+{
+	MMMouseButton button = LEFT_BUTTON;
+
+	if (info.Length() < 3)
+	{
+		return Nan::ThrowError("Invalid number of arguments.");
+	}
+
+	v8::String::Utf8Value bstr(info[0]->ToString());
+	const char * const b = *bstr;
+
+	switch (CheckMouseButton(b, &button))
+	{
+		case -1:
+			return Nan::ThrowError("Null pointer in mouse button code.");
+			break;
+		case -2:
+			return Nan::ThrowError("Invalid mouse button specified.");
+			break;
+	}
+	size_t x = info[1]->Int32Value();
+	size_t y = info[2]->Int32Value();
+
+	MMPoint point;
+	point = MMPointMake(x, y);
+
+	clickMouseAtPoint(button, point);
+	microsleep(mouseDelay);
+
+	info.GetReturnValue().Set(Nan::New(1));
+}
+
 NAN_METHOD(mouseToggle)
 {
 	MMMouseButton button = LEFT_BUTTON;
@@ -850,6 +883,9 @@ NAN_MODULE_INIT(InitAll)
 
 	Nan::Set(target, Nan::New("mouseClick").ToLocalChecked(),
 		Nan::GetFunction(Nan::New<FunctionTemplate>(mouseClick)).ToLocalChecked());
+
+	Nan::Set(target, Nan::New("mouseClickAtPoint").ToLocalChecked(),
+		Nan::GetFunction(Nan::New<FunctionTemplate>(mouseClickAtPoint)).ToLocalChecked());
 
 	Nan::Set(target, Nan::New("mouseToggle").ToLocalChecked(),
 		Nan::GetFunction(Nan::New<FunctionTemplate>(mouseToggle)).ToLocalChecked());

@@ -85,6 +85,9 @@ void toggleMouse(bool down, MMMouseButton button);
 /* Clicks the mouse with the given button in the current position. */
 void clickMouse(MMMouseButton button);
 
+/* Clicks the mouse with the given button at a specific point. */
+void clickMouseAtPoint(MMMouseButton button, MMPoint point);
+
 /* Double clicks the mouse with the given button. */
 void doubleClick(MMMouseButton button);
 
